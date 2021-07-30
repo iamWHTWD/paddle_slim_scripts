@@ -40,7 +40,7 @@ mkdir pretrain && cd pretrain
 for model in ${pre_models}
 do
     if [ ! -f ${model} ]; then
-        wget -c ${root_url}/${model}_pretrained.tar
+        wget -q ${root_url}/${model}_pretrained.tar
         tar xf ${model}_pretrained.tar
     fi
 done
