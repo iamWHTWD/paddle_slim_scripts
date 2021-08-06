@@ -74,7 +74,7 @@ model=dml_mv1_mv1_gpu1
 CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --epochs 1 >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=dml_mv1_res50_gpu1
-CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-resnet50' --epochs 1 >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-resnet50' --batch_size=64 --epochs 1 >${log_path}/${model} 2>&1
 print_info $? ${model}
 }
 
@@ -217,7 +217,7 @@ CUDA_VISIBLE_DEVICES=${cudaid1}  python train.py  --lr=0.001 \
 --batch_size 128 \
 --use_pact=True --num_epochs=1 --l2_decay=2e-5 --ls_epsilon=0.1 \
 --pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
---num_epochs 1 > ${log_path}/dy_pact_quant_v3_gpu1 2>&1
+--num_epochs 1 --batch_size=64 > ${log_path}/dy_pact_quant_v3_gpu1 2>&1
 print_info $? dy_pact_quant_v3_gpu1
 # 多卡训练，以0到3号卡为例
 CUDA_VISIBLE_DEVICES=${cudaid2}  python -m paddle.distributed.launch \
@@ -226,7 +226,7 @@ train.py  --lr=0.001 \
 --use_pact=True --num_epochs=1 \
 --l2_decay=2e-5 \
 --ls_epsilon=0.1 \
---batch_size=128 \
+--batch_size=64 \
 --model_save_dir output > ${log_path}/dy_pact_quant_v3_gpu4 2>&1
 print_info $? dy_pact_quant_v3_gpu4
 }
