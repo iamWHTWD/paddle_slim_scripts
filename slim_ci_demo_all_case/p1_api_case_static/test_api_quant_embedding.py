@@ -33,14 +33,15 @@ class TestQuantEmbedding(StaticCase):
         paddleslim.quant.quant_embedding(program, place, config=None, scope=None)
         :return:
         """
+        startup_program = paddle.static.Program()
         train_program = paddle.static.Program()
-        with paddle.static.program_guard(train_program):
+        with paddle.static.program_guard(train_program, startup_program):
             input_word = paddle.static.data(
                 name="input_word", shape=[None, 1], dtype='int64')
             param_attr = paddle.ParamAttr(
                 name='emb',
                 initializer=paddle.nn.initializer.Uniform(-0.005, 0.005))
-            weight = train_program.global_block().create_parameter(
+            weight = paddle.static.create_parameter(
                 (100, 128), attr=param_attr, dtype="float32")
 
             input_emb = paddle.nn.functional.embedding(
@@ -51,7 +52,7 @@ class TestQuantEmbedding(StaticCase):
         place = paddle.CUDAPlace(0) if paddle.is_compiled_with_cuda(
         ) else paddle.static.CPUPlace()
         exe = paddle.static.Executor(place)
-        exe.run(paddle.static.default_startup_program())
+        exe.run(startup_program)
 
         quant_program = quant.quant_embedding(infer_program, place)
 
